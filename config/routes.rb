@@ -2,10 +2,16 @@ Rails.application.routes.draw do
   devise_for :users
 
   root 'users#top'
-
-  resources :books, only: [:new, :create, :index, :show, :edit, :destroy, :update]
   resources :users, only: [:top, :show, :index, :edit, :update]
-  
+
+  resources :books, only: [:new, :create, :index, :show, :edit, :destroy, :update] do
+  	  resource :book_comments, only: [:create]
+  	  delete '/book_comments/:id' => 'book_comments#destroy'
+      resource :favorites, only: [:create, :destroy]
+
+      
+
+  end
 
   get 'home/about' => 'users#about'
 

@@ -24,14 +24,41 @@
   </th>
 	<th>
       <%= @book.title %>
-    </th>
-    <th>
+  </th>
+  <th>
       <%= @book.body %>
-    </th>
+  </th>
+
+    <% if @book.favorited_by?(current_user) %>
+    <td>
+        <%= link_to book_favorites_path(@book), method: :delete do %>
+        <i class="fa fa-heart" aria-hidden="true" style="color: red;"></i>
+        <%= @book.favorites.count %> いいね
+        <% end %>
+    </td>
+    <% else %>
+    <td>
+        <%= link_to book_favorites_path(@book), method: :post do %>
+        <i class="fa fa-heart-o" aria-hidden="true"></i>
+        <%= @book.favorites.count %> いいね
+        <% end %>
+    </td>
+    <% end %>
+
+    <td>
+        <i class="fa fa-comment"></i>
+        <a href="#comments"><%= @book.book_comments.count %></a>
+    </td>
+
+    <div class="comment-list bt style-2" id="comments">
+    <div class="float-wrapper">
+        <h2 class="comment-count"><%= @book.book_comments.count %>件コメント</h2>
+    </div>
+
+
 
   <% if @user.id == current_user.id %>
-     
-  
+
     <th>
       <%= link_to"Edit", edit_book_path(@book.id), class:"btn-sm btn-success edit_book_29217" %>
     </th>
@@ -41,6 +68,24 @@
   <% end %>
 </tr>
 
+
 </table>
+<td>
+  <div class="col-lg-8">
+<% @book.book_comments.each do |book_comment| %>
+<%= book_comment.comment %>
+
+<div>
+  <%= link_to "Destroy", "/books/#{book_comment.book.id}/book_comments/#{book_comment.id}", method: :delete, class: "btn btn-danger pull-right" %>
+</div>
+
+<% end %>
+</div>
+</td>
+
+<%= form_for [@book, @book_comment] do |f| %>
+<%= f.text_area :comment, rows:'5', class: "form-control",placeholder: "コメントをここに" %>
+ <%= f.submit "送信する" ,class:"btn btn-lg btn-basa-1 mt-20 pull-right" %>
+ <% end %>
 
 
